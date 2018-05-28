@@ -1,9 +1,9 @@
 
 from todo import create_app
-from todo import models
+import todo.models as models
 
-app = create_app('testing')
+app = create_app('development')
+# models.init_db()
 
 if __name__ == '__main__':
-    models.initialize()
     app.run()   

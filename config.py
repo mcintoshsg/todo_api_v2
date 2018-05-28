@@ -1,5 +1,8 @@
-''' app cofig '''
 import os
+
+from peewee import *
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
@@ -7,31 +10,30 @@ class Config:
     PORT = 8000
     SECRET_KEY = 'GWK~M$F2"|[|i|,KEJWxvA5~JQN!}fUz>|&h`>g.K2/p)%t3%4P:tuR6G6A'
     DEFAULT_RATE = "100/hour"
-
+    
     @staticmethod
     def init_app(app):
-        pass    
+        pass
+
 
 class DevelopmentConfig(Config):
-    DEBUG = True
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-    #     'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
-
+    DEBUG = True 
+    DATABASE = SqliteDatabase('todo_dev.db')
+    
 
 class TestingConfig(Config):
     TESTING = True
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-    #     'sqlite://'
+    DATABASE = SqliteDatabase(':memory:')
 
 
-# class ProductionConfig(Config):
-#     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-#         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+class ProductionConfig(Config):
+    pass    
+
 
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
-    
+    'production': ProductionConfig,
+
     'default': DevelopmentConfig
 }
-    

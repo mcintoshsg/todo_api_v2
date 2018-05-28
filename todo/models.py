@@ -7,7 +7,10 @@ from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer,
                           BadSignature, SignatureExpired)
 from peewee import *
 
-DATABASE = SqliteDatabase('todo.db')
+from . import db_proxy
+
+
+# DATABASE = SqliteDatabase('todo.db')
 HASHER = PasswordHasher()
 
 class User(Model):
@@ -16,7 +19,7 @@ class User(Model):
     password = CharField()
     
     class Meta:
-        database = DATABASE
+        database = db_proxy
 
     @classmethod
     def create_user(cls, username, email, password, **kwargs):
@@ -62,10 +65,12 @@ class Todo(Model):
     created_by = ForeignKeyField(rel_model=User, null=False)
     
     class Meta:
-        database = DATABASE
-        
+        database = db_proxy
 
-def initialize():
-    DATABASE.connect()
-    DATABASE.create_tables([User, Todo], safe=True)
-    DATABASE.close()
+def init_db():
+    db_proxy.connect()
+    db_proxy.create_tables([User, Todo], safe=True)
+    db_proxy.close()
+
+        
+    
