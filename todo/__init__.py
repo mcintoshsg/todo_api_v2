@@ -12,15 +12,12 @@ db_proxy = Proxy()
 
 def create_app(config_name):
     app = Flask(__name__)
-    # pdb.set_trace()
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     
     # limiter.init_app(app)
     
     db_proxy.initialize(config[config_name].DATABASE)
-    # DATABASE.create_tables([User, Todo], safe=True)
-    # DATABASE.close()
     
     from todo.resources.tasks import todos_api
     from todo.resources.users import users_api

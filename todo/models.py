@@ -9,8 +9,6 @@ from peewee import *
 
 from . import db_proxy
 
-
-# DATABASE = SqliteDatabase('todo.db')
 HASHER = PasswordHasher()
 
 class User(Model):

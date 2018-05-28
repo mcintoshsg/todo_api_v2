@@ -3,14 +3,12 @@ import json
 import unittest
 
 from flask import current_app
-from playhouse.test_utils import test_database
 from peewee import *
 
 from todo import create_app
 from todo import db_proxy
 from todo.models import User, Todo
 
-import pdb
 
 class BaseTestCase(unittest.TestCase):
     def setUp(self):
@@ -51,7 +49,6 @@ class UserModelTestCase(BaseTestCase):
 
     def test_create_user(self):
         ''' test the creation of the user '''
-        # with test_database(db_proxy, (User, )):
         self.create_users()
         self.assertEqual(User.select().count(), 2)
         self.assertNotEqual(
@@ -71,7 +68,6 @@ class TodoModelTestCase(BaseTestCase):
 
     def test_create_todos(self):
         ''' test the creation of todos '''
-        # with test_database(db_proxy, (Todo, )):    
         self.create_todos()
         self.assertEqual(Todo.select().count(), 2)
         self.assertEqual(
@@ -92,7 +88,6 @@ class UserResourceTestCase(BaseTestCase):
     ''' test the user api resourcses '''
 
     def test_get_users(self):
-        # with test_database(db_proxy, (User,)):
         UserModelTestCase.create_users(1)
         response = self.app.get('/api/v1/users')
         self.assertEqual(User.select().get().username, 'user_0')  
@@ -105,7 +100,6 @@ class UserResourceTestCase(BaseTestCase):
             'verify_password': 'password'
         }
 
-        # with test_database(db_proxy, (User,)):
         response = self.app.post('/api/v1/users', data=user_data)
         self.assertEqual(response.status_code, 201)  
          
@@ -117,7 +111,6 @@ class UserResourceTestCase(BaseTestCase):
             'verify_password': 'pass'
         }
         r_test = '{"error": "Password and password verification do not match"}'
-        # with test_database(db_proxy, (User,)):
         response = self.app.post('/api/v1/users', data=user_data)
         self.assertEqual(response.status_code, 400)  
         self.assertIn(r_test,
@@ -132,7 +125,6 @@ class UserResourceTestCase(BaseTestCase):
         }
         UserModelTestCase.create_users(1)
         
-        # with test_database(db_proxy, (User,)):
         response = self.app.post('/api/v1/users', data=user_data)
         self.assertEqual(response.status_code, 400)  
         self.assertRaises(Exception)    
@@ -143,7 +135,6 @@ class UserResourceTestCase(BaseTestCase):
             'password': 'password',
             'verify_password': 'password'
         }
-        # with test_database(db_proxy, (User,)):
         response = self.app.post('/api/v1/users', data=user_data)
         self.assertEqual(response.status_code, 400)  
         self.assertIn('No username provided',
@@ -155,7 +146,6 @@ class UserResourceTestCase(BaseTestCase):
             'password': 'password',
             'verify_password': 'password'
         }
-        # with test_database(db_proxy, (User,)):
         response = self.app.post('/api/v1/users', data=user_data)
         self.assertEqual(response.status_code, 400)  
         self.assertIn('No email provided',
@@ -167,7 +157,6 @@ class UserResourceTestCase(BaseTestCase):
             'email': 's@test.com',
             'verify_password': 'password'
         }
-        # with test_database(db_proxy, (User,)):
         response = self.app.post('/api/v1/users', data=user_data)
         self.assertEqual(response.status_code, 400)  
         self.assertIn('No password provided',
@@ -179,7 +168,6 @@ class UserResourceTestCase(BaseTestCase):
             'email': 's@test.com',
             'password': 'password'
         }
-        # with test_database(db_proxy, (User,)):
         response = self.app.post('/api/v1/users', data=user_data)
         self.assertEqual(response.status_code, 400)  
         self.assertIn('No password verification',
@@ -197,7 +185,6 @@ class TodoResourceTestCase(BaseTestCase):
     def test_get_todos_with_auth(self):
         test = ['Walk Dog', 'Clean Car']
         
-        # with test_database(db_proxy, (Todo, )):
         TodoModelTestCase.create_todos()
         user = User.select().get()
         headers = UserModelTestCase.get_headers(user)
@@ -208,7 +195,6 @@ class TodoResourceTestCase(BaseTestCase):
             self.assertIn(item['name'], test)
     
     def test_get_single_todo(self):
-    #    with test_database(db_proxy, (Todo, )):
         TodoModelTestCase.create_todos()
         user = User.select().get()
         headers = UserModelTestCase.get_headers(user)
@@ -221,7 +207,6 @@ class TodoResourceTestCase(BaseTestCase):
 
            
     def test_get_single_todo_does_not_exist(self):
-    #    with test_database(db_proxy, (Todo, )):
         TodoModelTestCase.create_todos()
         user = User.select().get()
         headers = UserModelTestCase.get_headers(user)
@@ -238,7 +223,6 @@ class TodoResourceTestCase(BaseTestCase):
         }
         headers = UserModelTestCase.get_headers(user)
         
-        # with test_database(db_proxy, (Todo,)):
         response = self.app.post('/api/v1/todos', data=todo_data,
                                 headers=headers)
         self.assertEqual(response.status_code, 201)  
@@ -254,7 +238,6 @@ class TodoResourceTestCase(BaseTestCase):
         }
         headers = UserModelTestCase.get_headers(user)
 
-        # with test_database(db_proxy, (Todo,)):
         response = self.app.post('/api/v1/todos', data=todo_data,
                                 headers=headers)
         self.assertEqual(response.status_code, 400)  
@@ -262,7 +245,6 @@ class TodoResourceTestCase(BaseTestCase):
                     response.get_data(as_text=True))
            
     def test_delete_todo(self):
-    #   with test_database(db_proxy, (Todo, )):
         TodoModelTestCase.create_todos()
         user = User.select().get()
         headers = UserModelTestCase.get_headers(user)
@@ -277,7 +259,6 @@ class TodoResourceTestCase(BaseTestCase):
                         'http://localhost/api/v1/todos')    
         
     def test_put_todo(self):
-    #    with test_database(db_proxy, (Todo, )):
         TodoModelTestCase.create_todos()
         user = User.select().get()
         headers = UserModelTestCase.get_headers(user)
