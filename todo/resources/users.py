@@ -8,7 +8,6 @@ import todo.models as models
 
 user_fields = {
     'username': fields.String,
-    'id': fields.Integer,
 }
 
 class UserList(Resource):

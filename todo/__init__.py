@@ -1,13 +1,13 @@
 from flask import Flask
 from flask_limiter import Limiter
-from flask_limiter.util import get_ipaddr
+from flask_limiter.util import get_remote_address
 
 from peewee import *
 
 from config import config
 
 
-limiter = Limiter()    
+limiter = Limiter(key_func=get_remote_address)    
 db_proxy = Proxy()
 
 def create_app(config_name):
@@ -26,9 +26,8 @@ def create_app(config_name):
     app.register_blueprint(todos_api, url_prefix='/api/v1')
     app.register_blueprint(users_api, url_prefix='/api/v1')
     
-    # limiter.__init__(application_limits=config[config_name].DEFAULT_RATE, key_func=get_ipaddr)
-    # limiter.limit("40/day")(users_api)
-    # # limiter.limit(config[config_name].TODO_LIMITS, per_method=True, 
-            #    methods=['post', 'put', 'delete'])(todos_api)
+    limiter.limit("40/day")(users_api)
+    limiter.limit(config[config_name].TODO_LIMITS, per_method=True, 
+                    methods=['post', 'put', 'delete'])(todos_api)
 
     return app

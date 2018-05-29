@@ -12,7 +12,6 @@ import todo.models as models
 todo_fields = {
     'id': fields.Integer,
     'name': fields.String,
-    'created_by': fields.String,
 }
 
 def todo_or_404(todo_id):
