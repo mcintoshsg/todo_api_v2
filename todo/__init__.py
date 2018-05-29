@@ -15,8 +15,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     
-    # limiter.init_app(app)
-    
+    limiter.init_app(app)
     db_proxy.initialize(config[config_name].DATABASE)
     
     from todo.resources.tasks import todos_api
@@ -27,9 +26,9 @@ def create_app(config_name):
     app.register_blueprint(todos_api, url_prefix='/api/v1')
     app.register_blueprint(users_api, url_prefix='/api/v1')
     
-    # limiter = Limiter(global_limits=config[config_name].DEFAULT_RATE, key_func=get_ipaddr)
+    # limiter.__init__(application_limits=config[config_name].DEFAULT_RATE, key_func=get_ipaddr)
     # limiter.limit("40/day")(users_api)
-    # limiter.limit(config[config_name].DEFAULT_RATE, per_method=True, 
-    #            methods=['post', 'put', 'delete'])(todos_api)
+    # # limiter.limit(config[config_name].TODO_LIMITS, per_method=True, 
+            #    methods=['post', 'put', 'delete'])(todos_api)
 
     return app

@@ -1,12 +1,10 @@
 from base64 import b64encode, b64decode
-import json
 import unittest
 
 from flask import current_app
 from peewee import *
 
-from todo import create_app
-from todo import db_proxy
+from todo import create_app, db_proxy
 from todo.models import User, Todo
 
 
@@ -15,14 +13,12 @@ class BaseTestCase(unittest.TestCase):
         app = create_app('testing')
         self.app = app.test_client()
        
-        db_proxy.connect()
         db_proxy.create_tables([User, Todo], safe=True)
        
     
     def tearDown(self):
-        db_proxy.drop_tables(User, Todo)
+        # db_proxy.drop_tables(User, Todo)
         db_proxy.close()
-        
         
 
 class UserModelTestCase(BaseTestCase):
@@ -176,11 +172,11 @@ class UserResourceTestCase(BaseTestCase):
 
 class TodoResourceTestCase(BaseTestCase):
     ''' test the user api resourcses '''
-    # def test_get_todos_no_auth(self):
-    #     response = self.app.get('/api/v1/todos')
-    #     self.assertEqual(response.status_code, 401) 
-    #     self.assertIn('Unauthorized Access',
-    #                     response.get_data(as_text=True))
+    def test_get_todos_no_auth(self):
+        response = self.app.get('/api/v1/todos')
+        self.assertEqual(response.status_code, 401) 
+        self.assertIn('Unauthorized Access',
+                        response.get_data(as_text=True))
 
     def test_get_todos_with_auth(self):
         test = ['Walk Dog', 'Clean Car']

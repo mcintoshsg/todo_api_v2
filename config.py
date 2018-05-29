@@ -1,15 +1,12 @@
-import os
 
 from peewee import *
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-
-
 class Config:
-    HOST = '0.0.0.0'
-    PORT = 8000
+    HOST = '0.0.0.0' # this is not registering
+    PORT = 8000 # this is not registering
     SECRET_KEY = 'GWK~M$F2"|[|i|,KEJWxvA5~JQN!}fUz>|&h`>g.K2/p)%t3%4P:tuR6G6A'
-    DEFAULT_RATE = "100/hour"
+    DEFAULT_RATE = ["1000/hour"]
+    TODO_LIMITS = "100/hour"
     
     @staticmethod
     def init_app(app):
@@ -17,7 +14,7 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    DEBUG = True 
+    DEBUG = True
     DATABASE = SqliteDatabase('todo_dev.db')
     
 

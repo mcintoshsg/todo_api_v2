@@ -60,7 +60,7 @@ class User(Model):
 class Todo(Model):
     name = CharField()
     created_at = DateTimeField(default=datetime.datetime.now)
-    created_by = ForeignKeyField(rel_model=User, null=False)
+    created_by = ForeignKeyField(User, backref='Todos')
     
     class Meta:
         database = db_proxy

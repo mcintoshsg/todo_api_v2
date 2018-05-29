@@ -12,6 +12,7 @@ import todo.models as models
 todo_fields = {
     'id': fields.Integer,
     'name': fields.String,
+    'created_by': fields.String,
 }
 
 def todo_or_404(todo_id):
@@ -34,17 +35,18 @@ class TodoList(Resource):
         )
         super().__init__()
 
-    # @auth.login_required
+    @auth.login_required
     def get(self):
         todos = [marshal(todos, todo_fields)
-                    for todos in models.Todo.select()]
+                    for todos in models.Todo.select().where(
+                                    models.Todo.created_by == g.user.id)]
         return todos
 
     @marshal_with(todo_fields)
     @auth.login_required
     def post(self):
         args = self.reqparse.parse_args()
-        todo = models.Todo.create(created_by=g.user, **args)
+        todo = models.Todo.create(created_by=g.user.id, **args)
         return (todo, 201, {
                 'Location': url_for('resources.todos.todo', id=todo.id)}
                )
